@@ -8,7 +8,7 @@ Python 3, Numpy, Pylab
 test.py: An example program.
 
 PYIN.py: PYin processor
-> PYin.process(input, frameSize): input wave data and frameSize, return an list of freq
+> PYin.process(input, frameSize): input wave data and frameSize, return a list of freq
 >>  *if frame is unvoiced, freq will be less than zero*
 
-> PYin.processFrame(input): input a frame, return freqProb of input
+> PYin.processFrame(input): input a frame, return freqProb
