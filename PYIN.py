@@ -6,7 +6,7 @@ import dists
 import MonoPitch
 
 class PYin():
-    def __init__(self, samprate, threshold = 0.2):
+    def __init__(self, samprate, threshold = 0.5):
         self.samprate = int(samprate)
         self.threshold = float(threshold)
         
@@ -31,10 +31,7 @@ class PYin():
         buff = YINHelper.fastDifference(input, buffSize)
         buff = YINHelper.cumulativeDifference(buff)
         
-        peakProb = YINHelper.peakProb(buff, self.pdf)
-        probSum = np.sum(peakProb)
-        
-        valleys = YINHelper.findValleys(buff)
+        valleys = YINHelper.findValleys(buff, threshold = self.threshold)
         
         mean = np.sum(input[:buffSize]) / buffSize
         input -= mean
