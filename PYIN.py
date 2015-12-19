@@ -5,7 +5,7 @@ import beta
 import dists
 import MonoPitch
 
-class PYin():
+class Processor():
     def __init__(self, samprate, threshold = 0.5):
         self.samprate = int(samprate)
         self.threshold = float(threshold)
@@ -17,6 +17,11 @@ class PYin():
         self.bias = 1.0
     
     def process(self, input, frameSize):
+        """
+        input wave data and frameSize, return a list of frequency in Herz
+        if frame is unvoiced, freq will be less than zero
+        """
+        
         nFrame = int(len(input) / frameSize)
         frames = []
         for iFrame in range(nFrame):
@@ -26,6 +31,13 @@ class PYin():
         return o
     
     def processFrame(self, input):
+        """
+        input a frame, return freqProbs
+        freqProbs.shape == (nValley, 2)
+        freqProbs[n][0] is frequency in Herz
+        freqProbs[n][1] is probability
+        """
+    
         buffSize = int(len(input) / 2)
         
         buff = YINHelper.fastDifference(input, buffSize)

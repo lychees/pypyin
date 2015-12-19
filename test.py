@@ -32,7 +32,7 @@ for iFrame in range(int(len(w) / frameSize)):
     fft[iFrame] = 20 * np.log10(ffted_f[0:2000])
 fft = fft.T
 
-yin = PYIN.PYin(sr)
+yin = PYIN.Processor(sr)
 
 yin.bias = 1.0
 o = yin.process(w, frameSize)

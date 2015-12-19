@@ -6,6 +6,10 @@ class Processor():
         self.hmm = MonoPitchHMM(minFreq, nBPS, nPitch, transRange, transSelf, yinTrust)
         
     def process(self, input): 
+        """
+        input freqProbs, return a list of frequency in Herz
+        """
+        
         obsProb = np.zeros((len(input), self.hmm.obsProbArraySize()), dtype = np.float64)
         
         for iFrame in range(len(input)):
