@@ -20,4 +20,5 @@ beta.py: Beta PDF generator.
 
 ## Bibliography
 * De Cheveigné A, Kawahara H. YIN, a fundamental frequency estimator for speech and music[J]. The Journal of the Acoustical Society of America, 2002, 111(4): 1917-1930.
+
 * Mauch M, Dixon S. pYIN: A fundamental frequency estimator using probabilistic threshold distributions[C]//Acoustics, Speech and Signal Processing (ICASSP), 2014 IEEE International Conference on. IEEE, 2014: 659-663.
