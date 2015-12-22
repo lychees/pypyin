@@ -2,7 +2,8 @@
 A PYIN F0 estimator implement in Python
 
 ## Requirement
-Python 3, Numpy, Pylab
+**Python 3, Numpy, Pylab**
+and **Scipy** for test.py
 
 ## Usage
 test.py: An example program.

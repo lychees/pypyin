@@ -6,6 +6,8 @@ import pylab as pl
 import beta
 import wave
 import MonoPitch
+from utils import *
+from scipy import signal
 
 f = wave.open("orig.wav", "rb")
 params = f.getparams()
@@ -20,30 +22,22 @@ w = np.fromstring(str_data, dtype = np.short)
 del str_data
 w = w.astype(np.float64) / 32768.0
 
-frameSize = 512
-
-fft = np.zeros((int(len(w) / frameSize), 2000))
-for iFrame in range(int(len(w) / frameSize)):
-    ffted = np.abs(np.fft.fft(w[iFrame * frameSize:(iFrame + 1) * frameSize]))[0:frameSize / 2]
-    fpb = (sr / 2.0) / (frameSize / 2.0)
-    ffted_f = np.zeros((sr / 2))
-    for bin, val in enumerate(ffted):
-        ffted_f[bin * fpb:(bin + 1) * fpb] = val
-    fft[iFrame] = 20 * np.log10(ffted_f[0:2000])
-fft = fft.T
-
 yin = PYIN.Processor(sr)
 
-yin.bias = 1.0
-o = yin.process(w, frameSize)
-
 yin.bias = 2.0
-p = yin.process(w, frameSize)
+p = yin.process(w)
+
+# to fft bins for ploting
+p = p / (sr / 2) * 1024
+
+fft = np.zeros((int(len(w) / yin.hopSize), 1024))
+for iHop in range(int(len(w) / yin.hopSize)):
+    fft[iHop] = np.abs(np.fft.fft(getFrame(w, iHop * yin.hopSize, 2048) * signal.blackmanharris(2048)))[0:1024]
+fft = np.log10(fft.T)[:256] # [0, 256) bin for better ploting
 
 pl.xlabel("Frame")
 pl.ylabel("Freq")
-pl.imshow(fft, origin = 'lower', cmap = 'jet', interpolation = 'bicubic', aspect = 'auto', vmin = 0, vmax = 100.0)
-pl.plot(np.arange(len(o)), o, 'bo', np.arange(len(o)), o)
+pl.imshow(fft, origin = 'lower', cmap = 'jet', interpolation = 'bicubic', aspect = 'auto')
 pl.plot(np.arange(len(p)), p, 'ro', np.arange(len(p)), p)
 
 pl.show()
