@@ -24,18 +24,15 @@ class Observer():
         path = np.ndarray((nFrame), dtype = np.int) # the final output path
         path.fill(nState - 1)
         
-        deltaSum = 0.0
-        
         # init first frame
         oldDelta = self.init * obsProb[0][:len(self.init)]
-        deltaSum += np.sum(oldDelta)
+        deltaSum = np.sum(oldDelta)
         
         scale[0] = 1.0 / deltaSum
         
         # rest of forward step
         
         for iFrame in range(1, nFrame):
-            deltaSum = 0.0
             for iTrans in range(0, nTrans):
                 fromState = self.frm[iTrans]
                 toState = self.to[iTrans]
@@ -47,7 +44,7 @@ class Observer():
                     psi[iFrame][toState] = fromState
             
             delta *= obsProb[iFrame][:len(self.init)]
-            deltaSum += np.sum(delta)
+            deltaSum = np.sum(delta)
             
             if(deltaSum > 0):
                 oldDelta = delta / deltaSum
@@ -63,8 +60,7 @@ class Observer():
         bestStateIdx = np.argmax(oldDelta)
         bestValue = oldDelta[bestStateIdx]
         path[-1] = bestStateIdx
-        
         # rest of backward step
         for iFrame in reversed(range(nFrame - 1)):
-            path[iFrame] = psi[iFrame+1][path[iFrame + 1]]
+            path[iFrame] = psi[iFrame + 1][path[iFrame + 1]]
         return path

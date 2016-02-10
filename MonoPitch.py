@@ -2,7 +2,7 @@ import numpy as np
 import SparseHMM
 
 class Processor():
-    def __init__(self, minFreq = 61.735, nBPS = 5, nPitch = 69, transRange = 2.5, transSelf = 0.99, yinTrust = 0.5):
+    def __init__(self, minFreq = 61.735, nBPS = 5, nPitch = 69, transRange = 2, transSelf = 0.99, yinTrust = 0.5):
         self.hmm = MonoPitchHMM(minFreq, nBPS, nPitch, transRange, transSelf, yinTrust)
         
     def process(self, input): 
@@ -14,7 +14,6 @@ class Processor():
         
         for iFrame in range(len(input)):
             obsProb[iFrame] = self.hmm.calcObsProb(input[iFrame])
-        
         path = self.hmm.decodeViterbi(obsProb)
         
         out = np.zeros((len(path)), dtype = np.float64)
@@ -32,8 +31,10 @@ class Processor():
                         bestFreq = freq
             else:
                 bestFreq = hmmFreq
+            if(abs(bestFreq - hmmFreq) > 100.0):
+                bestFreq = hmmFreq
             out[iFrame] = bestFreq
-        for iFrame in range(len(out)):
+        for iFrame in range(1, len(out)):
             if(out[iFrame - 1] <= 0.0 and out[iFrame] > 0.0):
                 out[iFrame - 1] = out[iFrame]
         return out
@@ -62,7 +63,6 @@ class MonoPitchHMM(SparseHMM.Observer):
         # initial vector
         self.init.fill(self.nPitch * 0.5)
         # transitions
-        transProb = 0
         
         iA = 0
         for iPitch in range(self.nPitch):

@@ -30,16 +30,16 @@ def fastDifference(input, outSize):
     
     # YIN-STYLE ACF via FFT
     # 1. data
-    transformedAudio = np.fft.fft(input)
+    transformedAudio = np.fft.rfft(input)
     
     # 2.half of the data, disguised as a convolution kernel
     kernel = np.zeros((frameSize), dtype = np.float64)
     kernel[:outSize] = input[:outSize][::-1]
-    transformedKernel = np.fft.fft(kernel)
+    transformedKernel = np.fft.rfft(kernel)
     
     # 3. convolution
     yinStyleACF = transformedAudio * transformedKernel
-    transformedAudio = np.fft.ifft(yinStyleACF)
+    transformedAudio = np.fft.irfft(yinStyleACF)
     
     # CALCULATION OF difference function
     # according to (7) in the Yin paper
